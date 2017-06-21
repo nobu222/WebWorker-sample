@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Hello JS!</h1>
+    <button id="start">start</button>
+    <button id="btn">click event fired!!!</button>
+    <script>
+        if (window.Worker) {
+            document.getElementById('btn')
+                .addEventListener('click', () => console.info('button click fired!!!'));
+
+            document.getElementById('start')
+                .addEventListener('click', () => {
+                    workerLog = function (e) {
+                        console.group();
+                        console.log(`%c${e.data} Worker onmessage fired!!!`, 'background: yellow; color:blue;');
+                    }
+
+                    let myWordker = new Worker('./worker.js');
+                    myWordker.onmessage = workerLog
+                    let myWordker2 = new Worker('./worker.js');
+                    myWordker2.onmessage = workerLog
+
+                    myWordker.postMessage("First Worker>>>");
+                    myWordker2.postMessage("Second Worker>>>");
+                    myWordker.postMessage("Third Worker>>>");
+
+                    setTimeout(() => {
+                        console.groupCollapsed();
+                        for (let i = 0; i < 100000; i++) {
+                            console.log('First Timeout>>>' + i);
+                        }
+                        console.groupEnd();
+                    }, 3000)
+
+                    console.groupCollapsed();
+                    for (let i = 0; i < 100000; i++) {
+                        console.log('First Loop>>>' + i);
+                    }
+                    console.groupEnd();
+
+                    console.groupCollapsed();
+                    for (let i = 0; i < 10000; i++) {
+                        console.log('Second Loop>>>' + i);
+                    }
+                    console.groupEnd();
+                })
+        }
+    </script>
+</body>
+
+</html>
